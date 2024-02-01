@@ -1,0 +1,23 @@
+---
+- name: Deploy provided asp.net api along with its sql server and react application as frontend
+  hosts: webservers
+  vars:
+    microsoft_repo: deb https://packages.microsoft.com/ubuntu/22.04/prod/ jammy main
+  become: true
+  gather_facts: true
+  pre_tasks:
+    - name: Add Microsoft repository
+      ansible.builtin.apt_repository:
+        repo: "{{ microsoft_repo }}"
+    - name: Update packages to the newest version
+      apt:
+        update_cache: yes
+        cache_valid_time: 86400 # One day
+        force_apt_get: yes
+  roles:
+    - common
+    - postgres
+    - ssl
+    - nginx
+    - react
+    - dotnet

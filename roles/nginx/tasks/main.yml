@@ -1,0 +1,42 @@
+---
+- name: Install nginx
+  apt:
+    name: nginx
+    state: latest
+
+- name: Sstart nginx
+  service:
+      name: nginx
+      state: started
+
+- name : Make sure HTTPS is supported by apt
+  apt:
+    name: apt-transport-https
+    state: latest
+    update_cache: yes
+
+- name: Generate main nginx config
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/nginx.conf.j2"
+    dest: "{{ nginx_conf_file }}"
+    mode: "0644"
+
+- name: Generate frontend nginx config
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/frontend.conf.j2"
+    dest: "{{ nginx_conf_dir}}/conf.d/frontend.conf"
+    mode: "0644"
+
+- name: Generate backend nginx config
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/backend.conf.j2"
+    dest: "{{ nginx_conf_dir}}/conf.d/backend.conf"
+    mode: "0644"
+
+- name: Clean up frontend exposed html directory
+  shell: rm -rf "{{ frontend_root_dir }}/*" "{{ frontend_root_dir }}/.*"
+
+- name: Restart nginx
+  service:
+      name: nginx
+      state: restarted

@@ -1,0 +1,36 @@
+---
+- name: Install all packages for database
+  apt:
+    name:
+      - postgresql
+      - postgresql-contrib
+      - libpq-dev
+      - python3-psycopg2
+    state: present
+      
+- name: Start Postgres service
+  service: 
+    name: postgresql
+    state: started
+
+- name: Create app database
+  postgresql_db:
+    state: present
+    name: "{{ database_name }}"
+  become_user: postgres
+
+- name: Create database user
+  postgresql_user:
+    state: present
+    name: "{{ database_user }}"
+    password: "{{ database_password }}"
+  become_user: postgres
+
+- name: Grant new created user access to database
+  postgresql_privs:
+    type: database
+    database: "{{ database_name }}"
+    roles: "{{ database_user }}"
+    grant_option: no
+    privs: all
+  become_user: postgres

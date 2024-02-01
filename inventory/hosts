@@ -1,0 +1,8 @@
+[webservers]
+localhost
+
+[webservers:vars]
+ansible_connection=ssh
+ansible_user=root
+ansible_password=bartek
+ansible_port=2222

@@ -1,0 +1,36 @@
+---
+- name: Install Certbot
+  apt:
+    pkg:
+      - certbot
+      - python3-certbot-nginx
+    state: present
+    force: yes
+    update_cache: yes
+
+- name: Install letsencrypt
+  apt:
+    name: letsencrypt
+    state: present
+
+- name: Create letsencrypt directory
+  file: 
+    name: "{{ frontend_root_dir }}/letsencrypt"
+    state: directory
+
+
+- name: Create letsencrypt certificate
+  shell: letsencrypt certonly -n --webroot -w {{ frontend_root_dir }}/letsencrypt -m {{ letsencrypt_email }} --agree-tos -d {{ inventory_hostname }}
+  args:
+    creates: /etc/letsencrypt/live/{{ inventory_hostname }}
+
+- name: Generate dhparams
+  shell: openssl dhparam -out /etc/nginx/dhparams.pem 2048
+  args:
+    creates: /etc/nginx/dhparams.pem
+
+- name: Add letsencrypt cronjob for cert renewal
+  cron:
+    name: letsencrypt_renewal
+    special_time: weekly
+    job: letsencrypt --renew certonly -n --webroot -w "{{ frontend_root_dir }}/letsencrypt" -m {{ letsencrypt_email }} --agree-tos -d {{ inventory_hostname }} && service nginx reload

@@ -1,0 +1,23 @@
+---
+database_port: 5432
+database_server: "{{ inventory_hostname }}"
+database_name: "SimpleProject"
+database_user: "MeUser"
+database_password: "Adminus123"
+
+nginx_conf_file: "/etc/nginx/nginx.conf"
+nginx_conf_dir: "/etc/nginx/"
+
+services_path: "/etc/systemd/system"
+
+frontend_root_dir: "/var/SimpleProject/frontend"
+frontend_dir_name: "ClientApp"
+
+backend_root_dir: "/var/SimpleProject/backend"
+backend_dir_name: "Release"
+backend_service_name: "spbackend"
+backend_service_desc: "API built with asp.net core framework"
+backend_appsettings_file: "appsettings.json"
+backend_db_engine: "Postgres"
+
+letsencrypt_email: "example@example.com"

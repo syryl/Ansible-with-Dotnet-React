@@ -1,0 +1,13 @@
+[Unit]
+Description={{ backend_service_desc }}
+[Service]
+WorkingDirectory={{ backend_root_dir }}
+ExecStart=/usr/bin/dotnet {{ backend_root_dir }}/SimpleProject.Web.dll
+Restart=always
+# Restart service after 10 seconds if the dotnet service crashes:
+RestartSec=10
+SyslogIdentifier={{ backend_service_name }}
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+[Install]
+WantedBy=multi-user.target

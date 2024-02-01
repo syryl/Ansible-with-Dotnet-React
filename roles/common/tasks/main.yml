@@ -1,0 +1,26 @@
+---
+- name: Allow access to http port
+  ufw:
+    rule: allow
+    port: 80
+    proto: tcp
+
+- name: Allow access to database port
+  ufw:
+    rule: allow
+    port: "{{ database_port }}"
+
+- name: Allow access to ssl port
+  ufw:
+    rule: allow
+    port: 443
+    proto: tcp
+
+- name: Install tools for monitoring
+  apt:
+    name: htop
+    state: present
+
+- name: Enable ufw
+  ufw:
+    state: enabled

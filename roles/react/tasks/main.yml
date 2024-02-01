@@ -1,0 +1,5 @@
+---
+- name: Copy react application files to defined project directory
+  ansible.posix.synchronize:
+    src: "{{ role_path }}/files/{{frontend_dir_name}}/"
+    dest: "{{ frontend_root_dir }}/" 
